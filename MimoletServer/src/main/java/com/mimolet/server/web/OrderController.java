@@ -1,16 +1,18 @@
 package com.mimolet.server.web;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mimolet.server.domain.Order;
@@ -58,4 +60,20 @@ public class OrderController {
 
         return "redirect:/index";
     }
+    
+    @RequestMapping(value = "/uploadfile", method = RequestMethod.POST)
+    public String upladFile(@RequestParam("byteArray") byte[] fileBytes){
+    	FileOutputStream fos;
+		try {
+			fos = new FileOutputStream("C:\\MyDir\\");
+    	fos.write(fileBytes);
+    	fos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return null;
+    }
+
 }

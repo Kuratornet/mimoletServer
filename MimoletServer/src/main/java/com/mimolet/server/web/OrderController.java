@@ -1,5 +1,6 @@
 package com.mimolet.server.web;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mimolet.server.domain.Order;
 import com.mimolet.server.service.OrderService;
@@ -61,19 +63,29 @@ public class OrderController {
         return "redirect:/index";
     }
     
-    @RequestMapping(value = "/uploadfile", method = RequestMethod.POST)
-    public String upladFile(@RequestParam("byteArray") byte[] fileBytes){
-    	FileOutputStream fos;
-		try {
-			fos = new FileOutputStream("C:\\MyDir\\");
-    	fos.write(fileBytes);
-    	fos.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	return null;
+//    @RequestMapping(value = "/uploadfile", method = RequestMethod.POST)
+//    public String upladFile(@RequestParam("byteArray") byte[] fileBytes){
+//    	FileOutputStream fos;
+//		try {
+//			fos = new FileOutputStream("C:\\MyDir\\");
+//    	fos.write(fileBytes);
+//    	fos.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//    	
+//    	return null;
+//    }
+    
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public String handleFormUpload(@RequestParam("file") MultipartFile file) throws IOException {
+      if (!file.isEmpty()) {
+        final File destination = new File("/");
+        System.out.println(destination.getAbsolutePath());
+        file.transferTo(destination);
+      }
+      return null;
     }
 
 }

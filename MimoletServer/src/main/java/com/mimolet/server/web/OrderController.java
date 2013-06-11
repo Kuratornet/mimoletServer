@@ -81,17 +81,17 @@ public class OrderController {
 	// }
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public boolean handleFormUpload(@RequestParam("file") MultipartFile file) {
-		boolean result = false;
+	public String handleFormUpload(@RequestParam("file") MultipartFile file) {
+		String result = "false";
 		try {
 			if (!file.isEmpty()) {
-				final File destination = new File("/");
+				final File destination = new File("somefile.pdf");
 				System.out.println(destination.getAbsolutePath());
 				file.transferTo(destination);
 			}
-			result = true;
+			result = "true";
 		} catch (IOException e) {
-			result = false;
+			result = "false";
 			log.error(file, e);
 		}
 		return result;

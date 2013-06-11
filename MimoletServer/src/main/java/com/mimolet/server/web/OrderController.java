@@ -81,12 +81,20 @@ public class OrderController {
 	// }
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String handleFormUpload(@RequestParam("file") MultipartFile file) {
+	public String handleFormUpload(@RequestParam("file") MultipartFile file, @RequestParam("description") String description
+			, @RequestParam("binding") String binding, @RequestParam("paper") String paper, @RequestParam("print") String print
+			, @RequestParam("blockSize") String blockSize,  @RequestParam("pages") String pages) {
 		String result = "false";
 		try {
 			if (!file.isEmpty()) {
 				final File destination = new File("somefile.pdf");
-				System.out.println(destination.getAbsolutePath());
+				System.out.println("Mega albom: " + description);
+				System.out.println("==============================");
+				System.out.println("Binding: " + binding);
+				System.out.println("Paper: " + paper);
+				System.out.println("Print: " + print);
+				System.out.println("Size of blocks: " + blockSize);
+				System.out.println("Pages: " + pages);
 				file.transferTo(destination);
 			}
 			result = "true";

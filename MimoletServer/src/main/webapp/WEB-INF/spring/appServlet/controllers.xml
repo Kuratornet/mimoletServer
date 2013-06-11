@@ -3,4 +3,5 @@
  Определяем папку, в которой будем искать веб компоненты (контроллеры)
 -->
 <context:component-scan base-package="com.mimolet.server.web"/>
+ <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
 </beans>

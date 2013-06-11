@@ -19,6 +19,9 @@
 <beans:property name="prefix" value="/WEB-INF/views/"/>
 <beans:property name="suffix" value=".jsp"/>
 </beans:bean>
+<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+<beans:property name="maxUploadSize" value="50000000"/>
+</beans:bean>
 <!--  Файл с настройками контроллеров  -->
 <beans:import resource="controllers.xml"/>
 </beans:beans>

@@ -2,6 +2,8 @@ package com.mimolet.server.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -48,6 +50,20 @@ public class OrderController {
 		return jsessionid;
 	}
 
+	@RequestMapping(value = "/getById", method = RequestMethod.POST)
+	public List<Order> getAllOrdersById(@RequestParam("ownerID") Integer ownerId) {
+
+		List<Order> ownerOrderList = new ArrayList<Order>();
+		List<Order> orderList = orderService.listOrder();
+		for (Order currentOrder: orderList) {
+			if (currentOrder.getOwnerId() == ownerId) {
+				ownerOrderList.add(currentOrder);
+			}
+		}
+
+		return ownerOrderList;
+	}
+	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String addOrder(@ModelAttribute("order") Order order,
 			BindingResult result) {
@@ -82,19 +98,15 @@ public class OrderController {
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public String handleFormUpload(@RequestParam("file") MultipartFile file, @RequestParam("description") String description
-			, @RequestParam("binding") String binding, @RequestParam("paper") String paper, @RequestParam("print") String print
-			, @RequestParam("blockSize") String blockSize,  @RequestParam("pages") String pages) {
+			, @RequestParam("binding") Integer binding, @RequestParam("paper") Integer paper, @RequestParam("print") Integer print
+			, @RequestParam("blockSize") Integer blockSize,  @RequestParam("pages") Integer pages, @RequestParam("orderNumber") Integer orderNumber
+			, @RequestParam("ownerId") Integer ownerId) {
 		String result = "false";
+		String filePath = null;
 		try {
 			if (!file.isEmpty()) {
-				final File destination = new File("somefile.pdf");
-				System.out.println("Mega albom: " + description);
-				System.out.println("==============================");
-				System.out.println("Binding: " + binding);
-				System.out.println("Paper: " + paper);
-				System.out.println("Print: " + print);
-				System.out.println("Size of blocks: " + blockSize);
-				System.out.println("Pages: " + pages);
+				final File destination = new File("owner" + ownerId + "orderNumber" + orderNumber + ".pdf");
+				filePath = destination.getAbsolutePath();
 				file.transferTo(destination);
 			}
 			result = "true";
@@ -102,6 +114,15 @@ public class OrderController {
 			result = "false";
 			log.error(file, e);
 		}
+		Order order = new Order();
+		order.setDescription(description);
+		order.setBinding(binding);
+		order.setBlocksize(blockSize);
+		order.setPaper(paper);
+		order.setPages(pages);
+		order.setLink(filePath);
+		order.setOwnerId(ownerId);
+		order.setStatus(0);
 		return result;
 	}
 

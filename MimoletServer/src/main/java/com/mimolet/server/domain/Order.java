@@ -20,11 +20,32 @@ public class Order {
     private String link;
 
     @Column(name = "STATUS")
-    private String status;
+    private Integer status;
+    
+    @Column(name = "DESCRIPTION")
+    private String description;
     
     @Column(name = "OWNERID")
     private Integer ownerId;
-
+    
+    @Column(name = "BINDING")
+    private Integer binding;
+    
+    @Column(name = "PAPER")
+    private Integer paper;
+    
+    @Column(name = "PRINT")
+    private Integer print;
+    
+    @Column(name = "BLOCKSIZE")
+    private Integer blocksize;
+    
+    @Column(name = "PAGES")
+    private Integer pages;
+    
+    @Column(name = "CREATED")
+    private String createData;
+    
 	public Integer getId() {
 		return id;
 	}
@@ -41,11 +62,11 @@ public class Order {
 		this.link = link;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
@@ -56,5 +77,53 @@ public class Order {
 	public void setOwnerId(Integer ownerId) {
 		this.ownerId = ownerId;
 	}
-    	
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Integer getBinding() {
+		return binding;
+	}
+
+	public void setBinding(Integer binding) {
+		this.binding = binding;
+	}
+
+	public Integer getPaper() {
+		return paper;
+	}
+
+	public void setPaper(Integer paper) {
+		this.paper = paper;
+	}
+
+	public Integer getPrint() {
+		return print;
+	}
+
+	public void setPrint(Integer print) {
+		this.print = print;
+	}
+
+	public Integer getBlocksize() {
+		return blocksize;
+	}
+
+	public void setBlocksize(Integer blocksize) {
+		this.blocksize = blocksize;
+	}
+
+	public Integer getPages() {
+		return pages;
+	}
+
+	public void setPages(Integer pages) {
+		this.pages = pages;
+	}	
+	
 }

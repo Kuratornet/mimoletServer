@@ -9,6 +9,8 @@ public interface OrderDAO {
     public void addOrder(Order order);
 
     public List<Order> listOrder();
+    
+    public List<Order> listOrderByOwnerId(Integer ownerId);
 
     public void removeOrder(Integer id);
     

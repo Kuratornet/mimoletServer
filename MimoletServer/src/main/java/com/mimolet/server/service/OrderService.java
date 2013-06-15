@@ -10,6 +10,8 @@ public interface OrderService {
 	
 	public List<Order> listOrder();
 	
+	public List<Order> listOrderByOwnerId(Integer ownerId);
+	
 	public void removeOrder(Integer id);
 
 }

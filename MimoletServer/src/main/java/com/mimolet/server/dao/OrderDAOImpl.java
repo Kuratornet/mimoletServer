@@ -27,6 +27,14 @@ public class OrderDAOImpl implements OrderDAO {
 		return sessionFactory.getCurrentSession().createQuery("from Order")
 	            .list();
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Order> listOrderByOwnerId(Integer ownerId) {
+		// TODO Auto-generated method stub
+		return sessionFactory.getCurrentSession().createQuery("from Order where ownerId=" + ownerId)
+	            .list();
+	}
 
 	@Override
 	public void removeOrder(Integer id) {
@@ -37,7 +45,6 @@ public class OrderDAOImpl implements OrderDAO {
         }
 		
 	}
-	
 
 
 }

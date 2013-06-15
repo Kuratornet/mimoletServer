@@ -52,16 +52,7 @@ public class OrderController {
 
 	@RequestMapping(value = "/getById", method = RequestMethod.POST)
 	public List<Order> getAllOrdersById(@RequestParam("ownerID") Integer ownerId) {
-
-		List<Order> ownerOrderList = new ArrayList<Order>();
-		List<Order> orderList = orderService.listOrder();
-		for (Order currentOrder: orderList) {
-			if (currentOrder.getOwnerId() == ownerId) {
-				ownerOrderList.add(currentOrder);
-			}
-		}
-
-		return ownerOrderList;
+		return orderService.listOrderByOwnerId(ownerId);
 	}
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)

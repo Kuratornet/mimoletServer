@@ -39,6 +39,12 @@ public class OrderController {
 		return "order";
 	}
 
+	@RequestMapping("/ping")
+	@ResponseBody
+	public String ping() {
+		return "pong";
+	}
+	
 	@RequestMapping("/")
 	public String home() {
 		return "redirect:/index";

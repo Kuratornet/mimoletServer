@@ -2,13 +2,16 @@ package com.mimolet.server.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -21,14 +24,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mimolet.server.domain.Order;
+import com.mimolet.server.domain.User;
 import com.mimolet.server.service.OrderService;
+import com.mimolet.server.service.UserService;
 
 @Controller
 public class OrderController {
-    private Log log = LogFactory.getLog(OrderController.class);
+	private Log log = LogFactory.getLog(OrderController.class);
 
 	@Autowired
 	private OrderService orderService;
+
+	@Autowired
+	private UserService userService;
 
 	@RequestMapping("/index")
 	public String listOrder(Map<String, Object> map) {
@@ -44,7 +52,7 @@ public class OrderController {
 	public String ping() {
 		return "pong";
 	}
-	
+
 	@RequestMapping("/")
 	public String home() {
 		return "redirect:/index";
@@ -52,7 +60,14 @@ public class OrderController {
 
 	@RequestMapping(value = "/jsessionid", method = RequestMethod.GET)
 	@ResponseBody
-	public String responseBody(@CookieValue("JSESSIONID") String jsessionid) {
+	public String responseBody(@CookieValue("JSESSIONID") String jsessionid,
+			Principal principal, HttpServletRequest request) {
+		final User loggedUser = userService.findUserByUsername(principal
+				.getName());
+//		System.out.println(request);
+//		System.out.println(request.getSession(true));
+//		System.out.println(loggedUser);
+//		request.getSession(true).setAttribute("userid", loggedUser.getId());
 		return jsessionid;
 	}
 
@@ -60,7 +75,7 @@ public class OrderController {
 	public List<Order> getAllOrdersById(@RequestParam("ownerID") Integer ownerId) {
 		return orderService.listOrderByOwnerId(ownerId);
 	}
-	
+
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String addOrder(@ModelAttribute("order") Order order,
 			BindingResult result) {
@@ -94,15 +109,22 @@ public class OrderController {
 	// }
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String handleFormUpload(@RequestParam("file") MultipartFile file, @RequestParam("description") String description
-			, @RequestParam("binding") Integer binding, @RequestParam("paper") Integer paper, @RequestParam("print") Integer print
-			, @RequestParam("blockSize") Integer blockSize,  @RequestParam("pages") Integer pages, @RequestParam("orderNumber") Integer orderNumber
-			, @RequestParam("ownerId") Integer ownerId) {
+	public String handleFormUpload(
+			@CookieValue("JSESSIONID") String jsessionid,
+			@RequestParam("file") MultipartFile file,
+			@RequestParam("description") String description,
+			@RequestParam("binding") Integer binding,
+			@RequestParam("paper") Integer paper,
+			@RequestParam("print") Integer print,
+			@RequestParam("blockSize") Integer blockSize,
+			@RequestParam("pages") Integer pages, HttpServletRequest request) {
+		final Integer ownerId = (Integer) request.getSession().getAttribute(
+				"userid");
 		String result = "false";
 		String filePath = null;
 		try {
 			if (!file.isEmpty()) {
-				final File destination = new File("owner" + ownerId + "orderNumber" + orderNumber + ".pdf");
+				final File destination = new File("owner" + ownerId + ".pdf");
 				filePath = destination.getAbsolutePath();
 				file.transferTo(destination);
 			}
@@ -111,7 +133,7 @@ public class OrderController {
 			result = "false";
 			log.error(file, e);
 		}
-		Order order = new Order();
+		final Order order = new Order();
 		order.setDescription(description);
 		order.setBinding(binding);
 		order.setBlocksize(blockSize);
@@ -120,6 +142,7 @@ public class OrderController {
 		order.setLink(filePath);
 		order.setOwnerId(ownerId);
 		order.setStatus(0);
+//		orderService.addOrder(order);
 		return result;
 	}
 

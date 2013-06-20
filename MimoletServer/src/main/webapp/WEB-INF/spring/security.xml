@@ -5,7 +5,7 @@
 		<intercept-url pattern="/login.jsp" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/*" access="ROLE_USER" />
 		<intercept-url pattern="/delete/*" access="ROLE_ADMIN" />
-		<form-login login-page="/login.jsp" default-target-url="/jsessionid"
+		<form-login login-page="/login.jsp" default-target-url="/"
 			authentication-failure-url="/login.jsp?error=true" />
 		<logout logout-url="/logout" logout-success-url="/login" />
 		<anonymous username="guest" granted-authority="ROLE_ANONYMOUS" />

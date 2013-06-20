@@ -2,7 +2,6 @@ package com.mimolet.server.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mimolet.server.domain.Order;
-import com.mimolet.server.domain.User;
 import com.mimolet.server.service.OrderService;
 import com.mimolet.server.service.UserService;
 
@@ -61,13 +62,7 @@ public class OrderController {
 	@RequestMapping(value = "/jsessionid", method = RequestMethod.GET)
 	@ResponseBody
 	public String responseBody(@CookieValue("JSESSIONID") String jsessionid,
-			Principal principal, HttpServletRequest request) {
-		final User loggedUser = userService.findUserByUsername(principal
-				.getName());
-//		System.out.println(request);
-//		System.out.println(request.getSession(true));
-//		System.out.println(loggedUser);
-//		request.getSession(true).setAttribute("userid", loggedUser.getId());
+			HttpServletRequest request) {
 		return jsessionid;
 	}
 
@@ -93,21 +88,6 @@ public class OrderController {
 		return "redirect:/index";
 	}
 
-	// @RequestMapping(value = "/uploadfile", method = RequestMethod.POST)
-	// public String upladFile(@RequestParam("byteArray") byte[] fileBytes){
-	// FileOutputStream fos;
-	// try {
-	// fos = new FileOutputStream("C:\\MyDir\\");
-	// fos.write(fileBytes);
-	// fos.close();
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// return null;
-	// }
-
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public String handleFormUpload(
 			@CookieValue("JSESSIONID") String jsessionid,
@@ -118,8 +98,7 @@ public class OrderController {
 			@RequestParam("print") Integer print,
 			@RequestParam("blockSize") Integer blockSize,
 			@RequestParam("pages") Integer pages, HttpServletRequest request) {
-		final Integer ownerId = (Integer) request.getSession().getAttribute(
-				"userid");
+		final Integer ownerId = getLoggedUserId();
 		String result = "false";
 		String filePath = null;
 		try {
@@ -142,8 +121,18 @@ public class OrderController {
 		order.setLink(filePath);
 		order.setOwnerId(ownerId);
 		order.setStatus(0);
-//		orderService.addOrder(order);
+		orderService.addOrder(order);
 		return result;
 	}
-
+	
+	private Integer getLoggedUserId() {
+		final SecurityContext securityContext = SecurityContextHolder.getContext();
+	    final Authentication authentication = securityContext.getAuthentication();
+	    if (authentication != null) {
+	        final User principal = (User) authentication.getPrincipal();
+	        final com.mimolet.server.domain.User user = userService.findUserByUsername(principal.getUsername());
+	        return user.getId();
+	    }
+	    return -1;
+	}
 }

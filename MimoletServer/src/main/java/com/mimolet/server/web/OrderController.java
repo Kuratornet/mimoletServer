@@ -63,7 +63,7 @@ public class OrderController {
 	@ResponseBody
 	public String responseBody(@CookieValue("JSESSIONID") String jsessionid,
 			HttpServletRequest request) {
-		return jsessionid;
+		return String.valueOf(getLoggedUserId());
 	}
 
 	@RequestMapping(value = "/getById", method = RequestMethod.POST)
@@ -117,6 +117,8 @@ public class OrderController {
 		order.setBinding(binding);
 		order.setBlocksize(blockSize);
 		order.setPaper(paper);
+		order.setPrint(1);
+		order.setCreateData("2011-03-18");
 		order.setPages(pages);
 		order.setLink(filePath);
 		order.setOwnerId(ownerId);
@@ -124,15 +126,18 @@ public class OrderController {
 		orderService.addOrder(order);
 		return result;
 	}
-	
+
 	private Integer getLoggedUserId() {
-		final SecurityContext securityContext = SecurityContextHolder.getContext();
-	    final Authentication authentication = securityContext.getAuthentication();
-	    if (authentication != null) {
-	        final User principal = (User) authentication.getPrincipal();
-	        final com.mimolet.server.domain.User user = userService.findUserByUsername(principal.getUsername());
-	        return user.getId();
-	    }
-	    return -1;
+		final SecurityContext securityContext = SecurityContextHolder
+				.getContext();
+		final Authentication authentication = securityContext
+				.getAuthentication();
+		if (authentication != null) {
+			final User principal = (User) authentication.getPrincipal();
+			final com.mimolet.server.domain.User user = userService
+					.findUserByUsername(principal.getUsername());
+			return user.getId();
+		}
+		return -1;
 	}
 }

@@ -6,46 +6,45 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "ordertable")
 public class Order {
 
 	@Id
-    @Column(name = "ID")
-    @GeneratedValue
-    private Integer id;
+	@Column(name = "ID")
+	@GeneratedValue
+	private Integer id;
 
-    @Column(name = "LINK")
-    private String link;
+	@Column(name = "LINK")
+	private String link;
 
-    @Column(name = "STATUS")
-    private Integer status;
-    
-    @Column(name = "DESCRIPTION")
-    private String description;
-    
-    @Column(name = "OWNERID")
-    private Integer ownerId;
-    
-    @Column(name = "BINDING")
-    private Integer binding;
-    
-    @Column(name = "PAPER")
-    private Integer paper;
-    
-    @Column(name = "PRINT")
-    private Integer print;
-    
-    @Column(name = "BLOCKSIZE")
-    private Integer blocksize;
-    
-    @Column(name = "PAGES")
-    private Integer pages;
-    
-    @Column(name = "CREATED")
-    private String createData;
-    
+	@Column(name = "STATUS")
+	private Integer status;
+
+	@Column(name = "DESCRIPTION")
+	private String description;
+
+	@Column(name = "OWNERID")
+	private Integer ownerId;
+
+	@Column(name = "BINDING")
+	private Integer binding;
+
+	@Column(name = "PAPER")
+	private Integer paper;
+
+	@Column(name = "PRINT")
+	private Integer print;
+
+	@Column(name = "BLOCKSIZE")
+	private Integer blocksize;
+
+	@Column(name = "PAGES")
+	private Integer pages;
+
+	@Column(name = "CREATED")
+	private String createData;
+
 	public Integer getId() {
 		return id;
 	}
@@ -124,6 +123,22 @@ public class Order {
 
 	public void setPages(Integer pages) {
 		this.pages = pages;
-	}	
-	
+	}
+
+	public void setCreateData(String createData) {
+		this.createData = createData;
+	}
+
+	public String getCreateData() {
+		return createData;
+	}
+
+	@Override
+	public String toString() {
+		return "Order [id=" + id + ", link=" + link + ", status=" + status
+				+ ", description=" + description + ", ownerId=" + ownerId
+				+ ", binding=" + binding + ", paper=" + paper + ", print="
+				+ print + ", blocksize=" + blocksize + ", pages=" + pages
+				+ ", createData=" + createData + "]";
+	}
 }

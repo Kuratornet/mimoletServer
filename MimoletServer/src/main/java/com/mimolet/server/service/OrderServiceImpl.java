@@ -18,21 +18,18 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional
 	@Override
 	public void addOrder(Order order) {
-		// TODO Auto-generated method stub
 		orderDAO.addOrder(order);
 	}
 	
 	@Transactional
 	@Override
 	public List<Order> listOrder() {
-		// TODO Auto-generated method stub
 		return orderDAO.listOrder();
 	}
 
 	@Transactional
 	@Override
 	public void removeOrder(Integer id) {
-		// TODO Auto-generated method stub
 		orderDAO.removeOrder(id);
 	}
 

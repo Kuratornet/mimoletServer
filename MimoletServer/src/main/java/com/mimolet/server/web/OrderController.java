@@ -2,7 +2,6 @@ package com.mimolet.server.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mimolet.server.domain.Order;
 import com.mimolet.server.service.OrderService;
+import com.mimolet.server.service.UserService;
 
 @Controller
 public class OrderController {
@@ -29,6 +29,9 @@ public class OrderController {
 
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private UserService userService;
 
 	@RequestMapping("/index")
 	public String listOrder(Map<String, Object> map) {
@@ -57,8 +60,8 @@ public class OrderController {
 	}
 
 	@RequestMapping(value = "/getById", method = RequestMethod.POST)
-	public List<Order> getAllOrdersById(@RequestParam("ownerID") Integer ownerId) {
-		return orderService.listOrderByOwnerId(ownerId);
+	public List<Order> getAllOrdersById(@RequestParam("ownerID") String ownerId) {
+		return orderService.listOrderByOwnerId(Integer.valueOf(ownerId));
 	}
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -76,6 +79,12 @@ public class OrderController {
 		orderService.removeOrder(orderId);
 
 		return "redirect:/index";
+	}
+	
+	@RequestMapping("/getid")
+	@ResponseBody
+	public Integer getId(@PathVariable("username") String name) {
+		return userService.getOwnerIdByName(name);
 	}
 
 	// @RequestMapping(value = "/uploadfile", method = RequestMethod.POST)

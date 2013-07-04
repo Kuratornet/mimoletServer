@@ -67,8 +67,9 @@ public class OrderController {
 	}
 
 	@RequestMapping(value = "/getById", method = RequestMethod.POST)
-	public List<Order> getAllOrdersById(@RequestParam("ownerID") String ownerId) {
-		return orderService.listOrderByOwnerId(Integer.valueOf(ownerId));
+	@ResponseBody
+	public List<Order> getAllOrdersById() {
+		return orderService.listOrderByOwnerId(getLoggedUserId());
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -146,4 +147,5 @@ public class OrderController {
 		}
 		return -1;
 	}
+	
 }

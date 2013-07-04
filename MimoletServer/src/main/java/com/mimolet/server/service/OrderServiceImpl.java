@@ -33,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
 		orderDAO.removeOrder(id);
 	}
 
+	@Transactional
 	@Override
 	public List<Order> listOrderByOwnerId(Integer ownerId) {
 		return orderDAO.listOrderByOwnerId(ownerId);

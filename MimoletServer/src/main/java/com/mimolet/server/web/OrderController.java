@@ -2,14 +2,17 @@ package com.mimolet.server.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mimolet.server.domain.Order;
@@ -38,6 +43,12 @@ public class OrderController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ServletContext servletContext;
+
+	@Autowired(required = true)
+	private ApplicationContext applicationContext;
 
 	@RequestMapping("/index")
 	public String listOrder(Map<String, Object> map) {
@@ -88,7 +99,7 @@ public class OrderController {
 
 		return "redirect:/index";
 	}
-	
+
 	@RequestMapping("/getid")
 	@ResponseBody
 	public Integer getId(@PathVariable("username") String name) {
@@ -99,6 +110,7 @@ public class OrderController {
 	public String handleFormUpload(
 			@CookieValue("JSESSIONID") String jsessionid,
 			@RequestParam("file") MultipartFile file,
+			@RequestParam("preview") MultipartFile preview,
 			@RequestParam("description") String description,
 			@RequestParam("binding") Integer binding,
 			@RequestParam("paper") Integer paper,
@@ -107,12 +119,24 @@ public class OrderController {
 			@RequestParam("pages") Integer pages, HttpServletRequest request) {
 		final Integer ownerId = getLoggedUserId();
 		String result = "false";
-		String filePath = null;
+		String previewLink = null;
 		try {
 			if (!file.isEmpty()) {
-				final File destination = new File("owner" + ownerId + ".pdf");
-				filePath = destination.getAbsolutePath();
+				File destination = new File(servletContext.getRealPath("owner" + ownerId + ".pdf"));
+				destination.getParentFile().mkdirs();
+				destination.createNewFile();
 				file.transferTo(destination);
+				destination = new File(servletContext.getRealPath("img/owner" + ownerId + ".png"));
+				destination.getParentFile().mkdirs();
+				destination.createNewFile();
+				preview.transferTo(destination);
+				final HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+						.currentRequestAttributes()).getRequest(); 
+				previewLink = "http://"
+						+ httpRequest.getLocalAddr() + ":"
+						+ httpRequest.getLocalPort()
+						+ servletContext.getContextPath() + "/img/owner"
+						+ ownerId + ".png"; 
 			}
 			result = "true";
 		} catch (IOException e) {
@@ -127,7 +151,7 @@ public class OrderController {
 		order.setPrint(1);
 		order.setCreateData("2011-03-18");
 		order.setPages(pages);
-		order.setLink(filePath);
+		order.setLink(previewLink);
 		order.setOwnerId(ownerId);
 		order.setStatus(0);
 		orderService.addOrder(order);
@@ -147,5 +171,5 @@ public class OrderController {
 		}
 		return -1;
 	}
-	
+
 }

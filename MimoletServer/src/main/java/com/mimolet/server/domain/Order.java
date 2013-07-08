@@ -17,6 +17,9 @@ public class Order {
 
 	@Column(name = "LINK")
 	private String link;
+	
+	@Column(name = "IMAGELINK")
+	private String imagelink;	
 
 	@Column(name = "STATUS")
 	private Integer status;
@@ -59,6 +62,14 @@ public class Order {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	public String getImagelink() {
+		return imagelink;
+	}
+
+	public void setImagelink(String imagelink) {
+		this.imagelink = imagelink;
 	}
 
 	public Integer getStatus() {

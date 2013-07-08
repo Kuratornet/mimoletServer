@@ -1,10 +1,14 @@
 package com.mimolet.server.domain;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "ordertable")
@@ -46,7 +50,8 @@ public class Order {
 	private Integer pages;
 
 	@Column(name = "CREATED")
-	private String createData;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createData;
 
 	public Integer getId() {
 		return id;
@@ -136,11 +141,11 @@ public class Order {
 		this.pages = pages;
 	}
 
-	public void setCreateData(String createData) {
+	public void setCreateData(Date createData) {
 		this.createData = createData;
 	}
 
-	public String getCreateData() {
+	public Date getCreateData() {
 		return createData;
 	}
 

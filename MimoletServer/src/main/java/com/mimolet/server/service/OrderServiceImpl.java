@@ -14,13 +14,13 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private OrderDAO orderDAO;
-	
+
 	@Transactional
 	@Override
 	public void addOrder(Order order) {
 		orderDAO.addOrder(order);
 	}
-	
+
 	@Transactional
 	@Override
 	public List<Order> listOrder() {
@@ -39,4 +39,9 @@ public class OrderServiceImpl implements OrderService {
 		return orderDAO.listOrderByOwnerId(ownerId);
 	}
 
+	@Transactional
+	@Override
+	public void saveOrder(Order order) {
+		orderDAO.saveOrder(order);
+	}
 }

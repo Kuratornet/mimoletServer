@@ -2,7 +2,7 @@ package com.mimolet.server.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -117,44 +117,50 @@ public class OrderController {
 			@RequestParam("print") Integer print,
 			@RequestParam("blockSize") Integer blockSize,
 			@RequestParam("pages") Integer pages, HttpServletRequest request) {
-		final Integer ownerId = getLoggedUserId();
 		String result = "false";
-		String previewLink = null;
-		try {
-			if (!file.isEmpty()) {
-				File destination = new File(servletContext.getRealPath("owner" + ownerId + ".pdf"));
-				destination.getParentFile().mkdirs();
-				destination.createNewFile();
-				file.transferTo(destination);
-				destination = new File(servletContext.getRealPath("img/owner" + ownerId + ".png"));
-				destination.getParentFile().mkdirs();
-				destination.createNewFile();
-				preview.transferTo(destination);
-				final HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
-						.currentRequestAttributes()).getRequest(); 
-				previewLink = "http://"
-						+ httpRequest.getLocalAddr() + ":"
-						+ httpRequest.getLocalPort()
-						+ servletContext.getContextPath() + "/img/owner"
-						+ ownerId + ".png"; 
-			}
-			result = "true";
-		} catch (IOException e) {
-			result = "false";
-			log.error(file, e);
-		}
+		final HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+				.currentRequestAttributes()).getRequest();
+		final int ownerId = getLoggedUserId();
 		final Order order = new Order();
 		order.setDescription(description);
 		order.setBinding(binding);
 		order.setBlocksize(blockSize);
 		order.setPaper(paper);
 		order.setPrint(1);
-		order.setCreateData("2011-03-18");
+		order.setCreateData(new Date());
 		order.setPages(pages);
-		order.setLink(previewLink);
 		order.setOwnerId(ownerId);
 		order.setStatus(0);
 		orderService.addOrder(order);
+		final String previewLink = "http://"
+				+ httpRequest.getLocalAddr() + ":"
+				+ httpRequest.getLocalPort()
+				+ servletContext.getContextPath() + "/img/"
+				+ ownerId + "_" + order.getId() + ".png";
+		final String pdfLink = "http://"
+				+ httpRequest.getLocalAddr() + ":"
+				+ httpRequest.getLocalPort()
+				+ servletContext.getContextPath() + "/pdf/"
+				+ ownerId + "_" + order.getId() + ".pdf";
+		order.setLink(pdfLink);
+		order.setImagelink(previewLink);
+		orderService.saveOrder(order);
+		try {
+			if (!file.isEmpty()) {
+				File destination = new File(servletContext.getRealPath("pdf/" + ownerId + "_" + order.getId() + ".pdf"));
+				destination.getParentFile().mkdirs();
+				destination.createNewFile();
+				file.transferTo(destination);
+				destination = new File(servletContext.getRealPath("img/" + ownerId + "_" + order.getId() + ".png"));
+				destination.getParentFile().mkdirs();
+				destination.createNewFile();
+				preview.transferTo(destination);
+			}
+			result = "true";
+		} catch (IOException e) {
+			result = "false";
+			log.error(file, e);
+		}
 		return result;
 	}
 

@@ -8,6 +8,8 @@ public interface OrderService {
 	
 	public void addOrder(Order order);
 	
+	public void saveOrder(Order order);
+	
 	public List<Order> listOrder();
 	
 	public List<Order> listOrderByOwnerId(Integer ownerId);

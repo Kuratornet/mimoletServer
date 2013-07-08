@@ -50,6 +50,10 @@ public class OrderDAOImpl implements OrderDAO {
 		if (null != order) {
 			sessionFactory.getCurrentSession().delete(order);
 		}
+	}
 
+	@Override
+	public void saveOrder(Order order) {
+		sessionFactory.getCurrentSession().update(order);
 	}
 }

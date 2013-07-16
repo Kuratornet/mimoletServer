@@ -100,9 +100,9 @@ public class OrderController {
 		return "redirect:/index";
 	}
 
-	@RequestMapping("/error")
+	@RequestMapping("/autherror")
 	@ResponseBody
-	public String getId() {
+	public String sendErrorMessage() {
 		return "false";
 	}
 	

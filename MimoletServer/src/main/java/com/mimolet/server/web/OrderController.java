@@ -100,6 +100,12 @@ public class OrderController {
 		return "redirect:/index";
 	}
 
+	@RequestMapping("/error")
+	@ResponseBody
+	public String getId() {
+		return "false";
+	}
+	
 	@RequestMapping("/getid")
 	@ResponseBody
 	public Integer getId(@PathVariable("username") String name) {

@@ -7,5 +7,6 @@
 	<session-factory>
 		<mapping class="com.mimolet.server.domain.Order" />
 		<mapping class="com.mimolet.server.domain.User" />
+		<mapping class="com.mimolet.server.domain.Authority" />
 	</session-factory>
 </hibernate-configuration>

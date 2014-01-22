@@ -23,6 +23,12 @@ public class User {
 	@Column(name = "enabled")
 	private String enabled;
 
+	@Column(name = "facebookid")
+	private String facebookid;
+	
+	@Column(name = "googleplusid")
+	private String googleplusid;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -55,9 +61,26 @@ public class User {
 		this.enabled = enabled;
 	}
 
+	public String getFacebookid() {
+		return facebookid;
+	}
+
+	public void setFacebookid(String facebookid) {
+		this.facebookid = facebookid;
+	}
+
+	public String getGoogleplusid() {
+		return googleplusid;
+	}
+
+	public void setGoogleplusid(String googleplusid) {
+		this.googleplusid = googleplusid;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password="
-				+ password + ", enabled=" + enabled + "]";
+				+ password + ", enabled=" + enabled + ", facebookid=" + facebookid 
+				+ ", gooogleplusid=" + googleplusid + "]";
 	}
 }

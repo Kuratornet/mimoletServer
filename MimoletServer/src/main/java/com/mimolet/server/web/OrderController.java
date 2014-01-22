@@ -8,11 +8,14 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +40,7 @@ import com.mimolet.server.service.UserService;
 @Controller
 public class OrderController {
 	private Log log = LogFactory.getLog(OrderController.class);
+	private static final String DEFAULT_PASS = "2921e995a926a2f6ee78f7d5405997e8";
 
 	@Autowired
 	private OrderService orderService;
@@ -46,7 +50,10 @@ public class OrderController {
 
 	@Autowired
 	private ServletContext servletContext;
-
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
 	@Autowired(required = true)
 	private ApplicationContext applicationContext;
 
@@ -112,6 +119,18 @@ public class OrderController {
 		return userService.findUserByUsername(name).getId();
 	}
 
+	@RequestMapping(value = "/adduser", method = RequestMethod.POST) 
+	public String handleUserAdd(@RequestParam("login") String loginEmail,
+								@RequestParam("password") String password,
+								@RequestParam("enabled") String enabled) {
+		com.mimolet.server.domain.User user = new com.mimolet.server.domain.User();
+		user.setUsername(loginEmail);
+		user.setPassword(password);
+		user.setEnabled(enabled);
+		userService.saveUser(user);
+		return "done";
+	}
+	
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public String handleFormUpload(
 			@CookieValue("JSESSIONID") String jsessionid,
@@ -183,5 +202,60 @@ public class OrderController {
 		}
 		return -1;
 	}
-
+	
+	@RequestMapping(value = "/socialauth", method = RequestMethod.POST)
+	@ResponseBody
+	public String socialAuth(@RequestParam("email") String username,
+			@RequestParam("validateid") String validateid,
+			@RequestParam("token") String token,
+			@RequestParam("source") String source) {
+		com.mimolet.server.domain.User user = userService.findUserByUsername(username);
+		log.info("Entered values - email: " + username + " validatedid: " + validateid
+				+ " token: " + token + " source: " + source);
+		log.info("Check user for null " + (user == null));
+		if (user != null) {
+			log.info(user);
+			if (source.equals("facebook")) {
+				log.info("Source facebook check validatedid " + (user.getFacebookid().equals(validateid)));
+				if (user.getFacebookid().equals(validateid)) {
+					socailAuthTask(user);
+					log.info("Send true answer");
+					return "true";
+				}
+			} else if (source.equals("googleplus")) {
+				log.info("Source googleplus");
+				if (user.getGoogleplusid().equals(validateid)) {
+					socailAuthTask(user);
+					return "true";
+				}
+			}
+		    return "false";
+		} else {
+			log.info("Creating new db user");
+			com.mimolet.server.domain.User savingUser = new com.mimolet.server.domain.User();
+			savingUser.setEnabled("true");
+			savingUser.setUsername(username);
+			savingUser.setPassword(DEFAULT_PASS);
+			if (source.equals("facebook")) {
+				savingUser.setFacebookid(validateid);
+			} else if (source.equals("googleplus")) {
+				savingUser.setGoogleplusid(validateid);
+			}
+			userService.saveUser(savingUser);
+			socailAuthTask(userService.findUserByUsername(username));
+			return "true";
+		}
+	}
+	
+	private void socailAuthTask(com.mimolet.server.domain.User user) {
+		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+	    Authentication authentication = authenticationManager.authenticate(authRequest);
+	    SecurityContext securityContext = SecurityContextHolder.getContext();
+	    securityContext.setAuthentication(authentication);
+	    HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
+				.currentRequestAttributes()).getRequest();
+	    HttpSession session = httpRequest.getSession(true);
+	    session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+	}
+	
 }

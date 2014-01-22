@@ -7,28 +7,29 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.mimolet.server.domain.User;
+import com.mimolet.server.domain.Authority;
 
 @Repository
-public class UserDAOImpl implements UserDAO {
+public class AuthorityDAOImpl implements AuthorityDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-
+	
 	@Override
-	public User findUserByUsername(String username) {
+	public Authority findAuthorityByUsername(String username) {
 		final Session session = sessionFactory.openSession();
 		try {
-			final Criteria criteria = session.createCriteria(User.class);
+			final Criteria criteria = session.createCriteria(Authority.class);
 			criteria.add(Restrictions.eq("username", username));
-			return (User) criteria.uniqueResult();
+			return (Authority) criteria.uniqueResult();
 		} finally {
 			session.close();
 		}
 	}
-	
+
 	@Override
-	public void saveUser(User user) {
-		sessionFactory.getCurrentSession().save(user);
+	public void addAuthority(Authority authority) {
+		sessionFactory.getCurrentSession().save(authority);
 	}
+
 }

@@ -5,6 +5,7 @@
 		<intercept-url pattern="/login.jsp" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/adduser" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/autherror" access="ROLE_ANONYMOUS, ROLE_USER" />
+		<intercept-url pattern="/ping" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/socialauth" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/*" access="ROLE_USER" />
 		<intercept-url pattern="/delete/*" access="ROLE_ADMIN" />

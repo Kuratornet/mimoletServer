@@ -32,4 +32,10 @@ public class UserServiceImpl implements UserService {
 		authority.setUsername(user.getUsername());
 		authDAO.addAuthority(authority);
 	}
+	
+	@Transactional
+	@Override
+	public void updatePassword(User user) {
+		userDAO.updatePassword(user);
+	}
 }

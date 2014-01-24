@@ -269,6 +269,7 @@ public class OrderController {
 					return "wronglogin";
 				} else {
 					user.setPassword(password);
+					userService.updatePassword(user);
 					authTask(user);
 					return "true";
 				}

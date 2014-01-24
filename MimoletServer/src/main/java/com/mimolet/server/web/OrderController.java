@@ -218,14 +218,14 @@ public class OrderController {
 			if (source.equals("facebook")) {
 				log.info("Source facebook check validatedid " + (user.getFacebookid().equals(validateid)));
 				if (user.getFacebookid().equals(validateid)) {
-					socailAuthTask(user);
+					authTask(user);
 					log.info("Send true answer");
 					return "true";
 				}
 			} else if (source.equals("googleplus")) {
 				log.info("Source googleplus");
 				if (user.getGoogleplusid().equals(validateid)) {
-					socailAuthTask(user);
+					authTask(user);
 					return "true";
 				}
 			}
@@ -242,12 +242,12 @@ public class OrderController {
 				savingUser.setGoogleplusid(validateid);
 			}
 			userService.saveUser(savingUser);
-			socailAuthTask(userService.findUserByUsername(username));
+			authTask(userService.findUserByUsername(username));
 			return "true";
 		}
 	}
 	
-	private void socailAuthTask(com.mimolet.server.domain.User user) {
+	private void authTask(com.mimolet.server.domain.User user) {
 		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 	    Authentication authentication = authenticationManager.authenticate(authRequest);
 	    SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -256,6 +256,35 @@ public class OrderController {
 				.currentRequestAttributes()).getRequest();
 	    HttpSession session = httpRequest.getSession(true);
 	    session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+	}
+	
+	@RequestMapping(value = "/registrationUser", method = RequestMethod.POST)
+	@ResponseBody
+	public String registrationUser(@RequestParam("email") String username,
+			@RequestParam("password") String password) {
+		try {
+			com.mimolet.server.domain.User user = userService.findUserByUsername(username);
+			if (user != null) {
+				if (!user.getPassword().equals(DEFAULT_PASS)) {
+					return "wronglogin";
+				} else {
+					user.setPassword(password);
+					authTask(user);
+					return "true";
+				}
+			} else {
+				user = new com.mimolet.server.domain.User();
+				user.setUsername(username);
+				user.setPassword(password);
+				user.setEnabled("true");
+				userService.saveUser(user);
+				authTask(user);
+				return "true";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "false";
+		}
 	}
 	
 }

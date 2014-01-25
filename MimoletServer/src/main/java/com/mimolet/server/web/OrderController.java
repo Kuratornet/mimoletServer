@@ -36,11 +36,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mimolet.server.domain.Order;
 import com.mimolet.server.service.OrderService;
 import com.mimolet.server.service.UserService;
+import com.mimolet.server.tools.EmailSender;
 
 @Controller
 public class OrderController {
 	private Log log = LogFactory.getLog(OrderController.class);
 	private static final String DEFAULT_PASS = "2921e995a926a2f6ee78f7d5405997e8";
+	EmailSender emailSender = new EmailSender();
 
 	@Autowired
 	private OrderService orderService;
@@ -101,9 +103,7 @@ public class OrderController {
 
 	@RequestMapping("/delete/{orderId}")
 	public String deleteOrder(@PathVariable("orderId") Integer orderId) {
-
 		orderService.removeOrder(orderId);
-
 		return "redirect:/index";
 	}
 
@@ -286,6 +286,13 @@ public class OrderController {
 			e.printStackTrace();
 			return "false";
 		}
+	}
+	
+	@RequestMapping("/restorepass")
+	public void restorepass(@PathVariable("email") String email) {
+		com.mimolet.server.domain.User user = userService.findUserByUsername(email);
+		emailSender.sendEmail(email, "Password restoring system", 
+				"Hello, User /n Your password is " + user.getPassword());
 	}
 	
 }

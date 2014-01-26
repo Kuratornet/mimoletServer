@@ -288,11 +288,22 @@ public class OrderController {
 		}
 	}
 	
-	@RequestMapping("/restorepass")
-	public void restorepass(@PathVariable("email") String email) {
+	@RequestMapping(value = "/restorepass", method = RequestMethod.POST)
+	@ResponseBody
+	public String restorepass(@RequestParam("email") String email) {
+		log.fatal("Password restore was requested by " + email);
 		com.mimolet.server.domain.User user = userService.findUserByUsername(email);
-		emailSender.sendEmail(email, "Password restoring system", 
-				"Hello, User /n Your password is " + user.getPassword());
+		if (user != null) {
+			if (!user.getPassword().equals(DEFAULT_PASS)) {
+				emailSender.sendEmail(email, "Password restoring", 
+						"Hello, User /n Your password is " + user.getPassword());
+				return "true";
+			} else {
+				return "false";
+			}
+		} else {
+			return "false";
+		}
 	}
 	
 }

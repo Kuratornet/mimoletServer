@@ -42,7 +42,6 @@ import com.mimolet.server.tools.EmailSender;
 public class OrderController {
 	private Log log = LogFactory.getLog(OrderController.class);
 	private static final String DEFAULT_PASS = "2921e995a926a2f6ee78f7d5405997e8";
-	EmailSender emailSender = new EmailSender();
 
 	@Autowired
 	private OrderService orderService;
@@ -295,8 +294,8 @@ public class OrderController {
 		com.mimolet.server.domain.User user = userService.findUserByUsername(email);
 		if (user != null) {
 			if (!user.getPassword().equals(DEFAULT_PASS)) {
-				emailSender.sendEmail(email, "Password restoring", 
-						"Hello, User /n Your password is " + user.getPassword());
+				EmailSender.sendEmail(email, "Mimolet password recovery", 
+						" Hello, User \n Your password is " + user.getPassword());
 				return "true";
 			} else {
 				return "false";

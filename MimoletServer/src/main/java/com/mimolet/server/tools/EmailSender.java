@@ -6,13 +6,13 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.SimpleEmail;
 
 public class EmailSender {
-	private Log log = LogFactory.getLog(EmailSender.class);
-	private static final String SERVICE_EMAIL = "kuratornet@gmail.com";
+	private static Log log = LogFactory.getLog(EmailSender.class);
+	private static final String SERVICE_EMAIL = "kuret@ukr.net";
 	private static final String SERVICE_LOGIN = "ServiceBot";
-	private static final String SERVICE_PASSWORD = "l1942sss";
-	private static final String SERVICE_HOST = "smtp.googlemail.com";
+	private static final String SERVICE_PASSWORD = "111111";
+	private static final String SERVICE_HOST = "smtp.ukr.net";
 	
-	public boolean sendEmail(String to, String subject, String message) {
+	public static boolean sendEmail(String to, String subject, String message) {
 		try {
 			SimpleEmail email = new SimpleEmail();
 			email.setHostName(SERVICE_HOST);

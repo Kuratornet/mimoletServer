@@ -12,7 +12,7 @@ public class EmailSender {
 	private static final String SERVICE_PASSWORD = "111111";
 	private static final String SERVICE_HOST = "smtp.ukr.net";
 	
-	public static boolean sendEmail(String to, String subject, String message) {
+	public boolean sendEmail(String to, String subject, String message) {
 		try {
 			SimpleEmail email = new SimpleEmail();
 			email.setHostName(SERVICE_HOST);

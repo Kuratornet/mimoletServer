@@ -14,4 +14,6 @@ public interface OrderDAO {
 	public void removeOrder(Integer id);
 
 	public void saveOrder(Order order);
+	
+	public Order getOrderById(Integer id);
 }

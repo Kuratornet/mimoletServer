@@ -4,11 +4,15 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.mimolet.server.domain.Order;
+import com.mimolet.server.domain.User;
 
 @Repository
 public class OrderDAOImpl implements OrderDAO {
@@ -54,5 +58,17 @@ public class OrderDAOImpl implements OrderDAO {
 	
 	public void saveOrder(Order order) {
 		sessionFactory.getCurrentSession().update(order);
+	}
+
+	@Override
+	public Order getOrderById(Integer id) {
+		final Session session = sessionFactory.openSession();
+		try {
+			final Criteria criteria = session.createCriteria(User.class);
+			criteria.add(Restrictions.eq("id", id));
+			return (Order) criteria.uniqueResult();
+		} finally {
+			session.close();
+		}
 	}
 }

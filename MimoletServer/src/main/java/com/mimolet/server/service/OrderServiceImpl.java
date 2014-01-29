@@ -44,4 +44,9 @@ public class OrderServiceImpl implements OrderService {
 	public void saveOrder(Order order) {
 		orderDAO.saveOrder(order);
 	}
+
+	@Override
+	public Order getOrderById(Integer id) {
+		return orderDAO.getOrderById(id);
+	}
 }

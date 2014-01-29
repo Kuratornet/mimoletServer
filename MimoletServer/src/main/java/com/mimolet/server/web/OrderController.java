@@ -41,6 +41,7 @@ import com.mimolet.server.tools.EmailSender;
 @Controller
 public class OrderController {
 	private Log log = LogFactory.getLog(OrderController.class);
+	private static final String SERVICE_EMAIL = "kuratornet@gmail.com";
 	private static final String DEFAULT_PASS = "2921e995a926a2f6ee78f7d5405997e8";
 
 	@Autowired
@@ -292,15 +293,40 @@ public class OrderController {
 	public String restorepass(@RequestParam("email") String email) {
 		log.fatal("Password restore was requested by " + email);
 		com.mimolet.server.domain.User user = userService.findUserByUsername(email);
+		EmailSender sender = new EmailSender();
 		if (user != null) {
 			if (!user.getPassword().equals(DEFAULT_PASS)) {
-				EmailSender.sendEmail(email, "Mimolet password recovery", 
+				sender.sendEmail(email, "Mimolet password recovery", 
 						" Hello, User \n Your password is " + user.getPassword());
 				return "true";
 			} else {
 				return "false";
 			}
 		} else {
+			return "false";
+		}
+	}
+	
+	@RequestMapping(value = "/purchaseorder", method = RequestMethod.POST)
+	@ResponseBody
+	public String purchaseorder(@RequestParam("id") String id,
+			@RequestParam("email") String email) {
+		log.fatal("Get reauest to purchase order with id =  " + id + " and email " + email);
+		try {
+			Order order = orderService.getOrderById(Integer.valueOf(id));
+			EmailSender sender = new EmailSender();
+			String userMessage = "Спасибо за то что заказали у нас альбом! \n" + 
+					"Ваш заказ: \n" + order.toString() + 
+					"Ожидайте письмо с подробностями оплаты и доставки";
+			String messageTitle = "Подробности заказа № " + id;
+			sender.sendEmail(email, messageTitle, userMessage);
+			String serviceMessage = "Новый заказ \n" + order.toString() + 
+					"Pdf заказа доступен по этому адресу " +order.getLink();
+			sender.sendEmail(SERVICE_EMAIL, messageTitle, serviceMessage);
+			return "true";
+		} catch (Exception e) {
+			log.fatal("Something really goes wrong!");
+			e.printStackTrace();
 			return "false";
 		}
 	}

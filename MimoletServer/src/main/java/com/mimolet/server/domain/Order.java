@@ -151,10 +151,34 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", link=" + link + ", status=" + status
-				+ ", description=" + description + ", ownerId=" + ownerId
-				+ ", binding=" + binding + ", paper=" + paper + ", print="
-				+ print + ", blocksize=" + blocksize + ", pages=" + pages
-				+ ", createData=" + createData + "]";
+		StringBuffer result = new StringBuffer();
+		result.append("Order " + id + "\n");
+		switch (binding) {
+		case (1):
+			result.append("Переплет: На скобу \n");
+			break;
+		}
+		switch (binding) {
+		case (1):
+			result.append("Обложка: Мягкая \n");
+			break;
+		}
+		switch (print) {
+		case (1):
+			result.append("Печать: цифровая \n");
+			break;
+		}
+		switch (paper) {
+		case (1):
+			result.append("Бумага: качественная \n");
+			break;
+		}
+		switch (blocksize) {
+		case (1):
+			result.append("Размер блока: 20х20 \n");
+			break;
+		}
+		result.append("Страниц: " + pages + "\n");
+		return result.toString();
 	}
 }

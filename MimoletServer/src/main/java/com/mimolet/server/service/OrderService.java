@@ -15,5 +15,7 @@ public interface OrderService {
 	public List<Order> listOrderByOwnerId(Integer ownerId);
 	
 	public void removeOrder(Integer id);
+	
+	public Order getOrderById(Integer id);
 
 }

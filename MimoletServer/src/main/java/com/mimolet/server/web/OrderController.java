@@ -110,6 +110,7 @@ public class OrderController {
 	@RequestMapping("/autherror")
 	@ResponseBody
 	public String sendErrorMessage() {
+		log.info("Auth error");
 		return "false";
 	}
 	
@@ -311,14 +312,15 @@ public class OrderController {
 	@ResponseBody
 	public String purchaseorder(@RequestParam("id") String id,
 			@RequestParam("email") String email) {
-		log.fatal("Get reauest to purchase order with id =  " + id + " and email " + email);
+		int orderid = Integer.valueOf(id); 
+		log.fatal("Get request to purchase order with id =  " + orderid + " and email " + email);
 		try {
-			Order order = orderService.getOrderById(Integer.valueOf(id));
+			Order order = orderService.getOrderById(orderid);
 			EmailSender sender = new EmailSender();
 			String userMessage = "Спасибо за то что заказали у нас альбом! \n" + 
 					"Ваш заказ: \n" + order.toString() + 
 					"Ожидайте письмо с подробностями оплаты и доставки";
-			String messageTitle = "Подробности заказа № " + id;
+			String messageTitle = "Подробности заказа № " + orderid;
 			sender.sendEmail(email, messageTitle, userMessage);
 			String serviceMessage = "Новый заказ \n" + order.toString() + 
 					"Pdf заказа доступен по этому адресу " +order.getLink();

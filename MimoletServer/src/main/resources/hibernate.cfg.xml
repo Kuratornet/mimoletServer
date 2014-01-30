@@ -5,6 +5,7 @@
 
 <hibernate-configuration>
 	<session-factory>
+		<property name="show_sql">true</property>
 		<mapping class="com.mimolet.server.domain.Order" />
 		<mapping class="com.mimolet.server.domain.User" />
 		<mapping class="com.mimolet.server.domain.Authority" />

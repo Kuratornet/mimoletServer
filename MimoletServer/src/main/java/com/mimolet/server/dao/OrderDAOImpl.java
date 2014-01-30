@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.mimolet.server.domain.Order;
-import com.mimolet.server.domain.User;
 
 @Repository
 public class OrderDAOImpl implements OrderDAO {
@@ -64,7 +63,7 @@ public class OrderDAOImpl implements OrderDAO {
 	public Order getOrderById(Integer id) {
 		final Session session = sessionFactory.openSession();
 		try {
-			final Criteria criteria = session.createCriteria(User.class);
+			final Criteria criteria = session.createCriteria(Order.class);
 			criteria.add(Restrictions.eq("id", id));
 			return (Order) criteria.uniqueResult();
 		} finally {

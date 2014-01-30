@@ -9,7 +9,7 @@ public class EmailSender {
 	private static Log log = LogFactory.getLog(EmailSender.class);
 	private static final String SERVICE_EMAIL = "kuret@ukr.net";
 	private static final String SERVICE_LOGIN = "ServiceBot";
-	private static final String SERVICE_PASSWORD = "111111";
+	private static final String SERVICE_PASSWORD = "321677";
 	private static final String SERVICE_HOST = "smtp.ukr.net";
 	
 	public boolean sendEmail(String to, String subject, String message) {
@@ -19,6 +19,7 @@ public class EmailSender {
 			email.setSmtpPort(465);
 			email.setAuthenticator(new DefaultAuthenticator(SERVICE_EMAIL, SERVICE_PASSWORD));
 			email.setSSL(true);
+			email.setCharset("utf-8");
 			email.addTo(to, to);
 			email.setFrom(SERVICE_EMAIL, SERVICE_LOGIN);
 			email.setSubject(subject);

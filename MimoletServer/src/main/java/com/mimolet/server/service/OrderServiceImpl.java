@@ -10,6 +10,7 @@ import com.mimolet.server.dao.OrderDAO;
 import com.mimolet.server.domain.Order;
 
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
 	@Autowired

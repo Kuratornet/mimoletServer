@@ -9,9 +9,9 @@
 		<intercept-url pattern="/socialauth" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/registrationUser" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/restorepass" access="ROLE_ANONYMOUS, ROLE_USER" />
-		<intercept-url pattern="/*" access="ROLE_USER" />
+		<!-- <intercept-url pattern="/*" access="ROLE_USER" /> -->
 		<intercept-url pattern="/img/*" access="ROLE_ANONYMOUS, ROLE_USER" />
-		<intercept-url pattern="/purchaseorder" access="ROLE_USER" />
+		<intercept-url pattern="/purchaseorder" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/delete/*" access="ROLE_ADMIN" />
 		<form-login login-page="/autherror" default-target-url="/"
 			authentication-failure-url="/autherror" />

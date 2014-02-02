@@ -17,6 +17,7 @@ public class PhotoData implements Serializable {
 	private int backgroundColor;
 	private int borderColor;
 	private int textTextColor;
+	private int pageId;
 	public int getPhotoStyle() {
 		return photoStyle;
 	}
@@ -96,6 +97,12 @@ public class PhotoData implements Serializable {
 			result.append("Размер текста: " + textFontSize + "\n");
 		}
 		return result.toString();
+	}
+	public int getPageId() {
+		return pageId;
+	}
+	public void setPageId(int pageId) {
+		this.pageId = pageId;
 	}
 }
 

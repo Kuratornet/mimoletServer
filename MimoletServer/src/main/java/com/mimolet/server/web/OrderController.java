@@ -357,8 +357,7 @@ public class OrderController {
 			    @SuppressWarnings("unchecked")
 				HashMap<Integer,PhotoData> workMap = (HashMap<Integer,PhotoData>) ois.readObject();
 			    for (Map.Entry<Integer, PhotoData> entry : workMap.entrySet()) {
-			        int i = 1;
-			        serviceMessage += "\n Данные по фото № " + i + "\n" + entry.getValue().toString();
+			        serviceMessage += "\n Данные по фото № " + entry.getValue().getPageId() + "\n" + entry.getValue().toString();
 			    }
 			    ois.close();
 			} else {

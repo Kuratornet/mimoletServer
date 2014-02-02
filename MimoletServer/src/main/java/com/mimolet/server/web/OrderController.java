@@ -1,8 +1,13 @@
 package com.mimolet.server.web;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +17,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +41,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mimolet.server.domain.Order;
+import com.mimolet.server.domain.PhotoData;
 import com.mimolet.server.service.OrderService;
 import com.mimolet.server.service.UserService;
 import com.mimolet.server.tools.EmailSender;
@@ -142,6 +150,7 @@ public class OrderController {
 			@RequestParam("paper") Integer paper,
 			@RequestParam("print") Integer print,
 			@RequestParam("blockSize") Integer blockSize,
+			@RequestParam("imagesDescription") String imagesDescriptionString,
 			@RequestParam("pages") Integer pages, HttpServletRequest request) {
 		String result = "false";
 		final HttpServletRequest httpRequest = ((ServletRequestAttributes) RequestContextHolder
@@ -171,6 +180,23 @@ public class OrderController {
 		order.setLink(pdfLink);
 		order.setImagelink(previewLink);
 		orderService.saveOrder(order);
+		log.info(imagesDescriptionString);
+		try {
+			HashMap<Integer, PhotoData> map = new HashMap<Integer, PhotoData>();
+			ObjectMapper mapper = new ObjectMapper();
+			map = mapper.readValue(imagesDescriptionString,
+					new TypeReference<HashMap<Integer, PhotoData>>() {
+					});
+			File destination = new File(servletContext.getRealPath("imgdesc/" + ownerId + "_" + order.getId() + ".imdc"));
+			destination.getParentFile().mkdirs();
+			destination.createNewFile();
+			FileOutputStream fos = new FileOutputStream(destination);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(map);
+			oos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		try {
 			if (!file.isEmpty()) {
 				File destination = new File(servletContext.getRealPath("pdf/" + ownerId + "_" + order.getId() + ".pdf"));
@@ -323,7 +349,21 @@ public class OrderController {
 			String messageTitle = "Подробности заказа № " + orderid;
 			sender.sendEmail(email, messageTitle, userMessage);
 			String serviceMessage = "Новый заказ \n" + order.toString() + 
-					"Pdf заказа доступен по этому адресу " +order.getLink();
+					"Pdf заказа доступен по этому адресу " + order.getLink();
+			File destination = new File(servletContext.getRealPath("imgdesc/" + order.getOwnerId() + "_" + order.getId() + ".imdc"));
+			if (destination.exists()) {
+				FileInputStream fis = new FileInputStream(destination);
+			    ObjectInputStream ois = new ObjectInputStream(fis);
+			    @SuppressWarnings("unchecked")
+				HashMap<Integer,PhotoData> workMap = (HashMap<Integer,PhotoData>) ois.readObject();
+			    for (Map.Entry<Integer, PhotoData> entry : workMap.entrySet()) {
+			        int i = 1;
+			        serviceMessage += "\n Данные по фото № " + i + "\n" + entry.getValue().toString();
+			    }
+			    ois.close();
+			} else {
+				return "false";
+			}
 			sender.sendEmail(SERVICE_EMAIL, messageTitle, serviceMessage);
 			return "true";
 		} catch (Exception e) {

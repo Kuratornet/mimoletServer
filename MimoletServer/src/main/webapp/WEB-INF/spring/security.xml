@@ -12,7 +12,7 @@
 		<!-- <intercept-url pattern="/*" access="ROLE_USER" /> -->
 		<intercept-url pattern="/img/*" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<intercept-url pattern="/purchaseorder" access="ROLE_ANONYMOUS, ROLE_USER" />
-		<intercept-url pattern="/delete/*" access="ROLE_ADMIN" />
+		<intercept-url pattern="/delete/*" access="ROLE_USER, ROLE_ADMIN" />
 		<form-login login-page="/autherror" default-target-url="/"
 			authentication-failure-url="/autherror" />
 		<logout logout-url="/logout" logout-success-url="/login" />

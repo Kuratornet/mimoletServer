@@ -110,9 +110,14 @@ public class OrderController {
 	}
 
 	@RequestMapping("/delete/{orderId}")
+	@ResponseBody
 	public String deleteOrder(@PathVariable("orderId") Integer orderId) {
-		orderService.removeOrder(orderId);
-		return "redirect:/index";
+		try {
+			orderService.removeOrder(orderId);
+			return "true";
+		} catch (Exception e) {
+			return "false";
+		}
 	}
 
 	@RequestMapping("/autherror")
@@ -357,7 +362,7 @@ public class OrderController {
 			    @SuppressWarnings("unchecked")
 				HashMap<Integer,PhotoData> workMap = (HashMap<Integer,PhotoData>) ois.readObject();
 			    for (Map.Entry<Integer, PhotoData> entry : workMap.entrySet()) {
-			        serviceMessage += "\n Данные по фото № " + entry.getValue().getPageId() + "\n" + entry.getValue().toString();
+			        serviceMessage += "\n Данные по фото № " + (entry.getValue().getPageId() + 1) + "\n" + entry.getValue().toString();
 			    }
 			    ois.close();
 			} else {

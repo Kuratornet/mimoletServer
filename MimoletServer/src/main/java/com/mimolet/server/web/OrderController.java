@@ -113,6 +113,7 @@ public class OrderController {
 	@ResponseBody
 	public String deleteOrder(@PathVariable("orderId") Integer orderId) {
 		try {
+			log.warn("Delete order where ID = " + orderId);
 			orderService.removeOrder(orderId);
 			return "true";
 		} catch (Exception e) {

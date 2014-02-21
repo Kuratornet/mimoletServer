@@ -243,8 +243,6 @@ public class OrderController {
 			@RequestParam("token") String token,
 			@RequestParam("source") String source) {
 		com.mimolet.server.domain.User user = userService.findUserByUsername(username);
-		log.info("Entered values - email: " + username + " validatedid: " + validateid
-				+ " token: " + token + " source: " + source);
 		log.info("Check user for null " + (user == null));
 		if (user != null) {
 			log.info(user);
